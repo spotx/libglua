@@ -19,5 +19,6 @@ namespace kdk::exceptions
 
 KDK_EXCEPTION(GluaBaseException);
 KDK_EXCEPTION(LuaException);
+KDK_EXCEPTION(V8Exception);
 
 } // namespace kdk::exceptions

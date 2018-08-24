@@ -30,6 +30,7 @@ set(SOURCE_FILES
     inc/glua/GluaBaseHelperTemplates.h src/GluaBaseHelperTemplates.cpp
     inc/glua/GluaCallable.h inc/glua/GluaCallable.tcc
     inc/glua/GluaLua.h src/GluaLua.cpp
+    inc/glua/GluaV8.h src/GluaV8.cpp
     inc/glua/GluaManagedTypeStorage.h
     inc/glua/ICallable.h src/ICallable.cpp
     inc/glua/StringUtil.h src/StringUtil.cpp
@@ -42,6 +43,7 @@ target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${LUA_INCLUDE_PATH})
 target_compile_options(
     ${PROJECT_NAME} PRIVATE
     -std=c++17
+    -stdlib=libc++
     -Wall
     -Wextra
     -Werror
@@ -85,24 +87,83 @@ else()
     )
 endif()
 
-if(CLANG_TIDY_BIN)
-    set_target_properties(glua PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND}")
-endif()
+#if(CLANG_TIDY_BIN)
+#    set_target_properties(glua PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND}")
+#endif()
 
-### EXAMPLE PROJECT ###
-project (libglua-examples)
+### LUA EXAMPLE PROJECT ###
+project (libglua-lua-examples)
 
 include_directories("${PROJECT_SOURCE_DIR}/inc")
-add_executable(libglua-examples
-    src/examples/examples.cpp
+add_executable(libglua-lua-examples
+    src/examples/lua_examples.cpp
 )
 target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${LUA_INCLUDE_PATH})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE glua ${LIBLUA})
+target_link_libraries(${PROJECT_NAME} PRIVATE glua c++ ${LIBLUA} v8 v8_libbase v8_libplatform)
 
 target_compile_options(
     ${PROJECT_NAME} PRIVATE
     -std=c++17
+    -stdlib=libc++
+    -Wall
+    -Wextra
+    -Werror
+    -Wpedantic
+    -pedantic-errors
+    -Wno-c++98-compat
+    -Wno-c++98-compat-pedantic
+    -Wno-padded
+    -Wno-weak-vtables
+    -Wno-undefined-func-template
+    -MD
+    -Wno-gnu-anonymous-struct
+    -Wno-nested-anon-types
+    -Wno-exit-time-destructors
+    -Wno-global-constructors
+    -Wno-error=deprecated-declarations
+    -Wno-switch
+)
+
+if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+    target_compile_options(
+        ${PROJECT_NAME} PRIVATE
+        -g
+        -O0
+        -gdwarf-2
+    )
+
+    if(D_GLIBCXX_DEBUG)
+    target_compile_options(
+        ${PROJECT_NAME} PRIVATE
+        -D_GLIBCXX_DEBUG
+    )
+    endif()
+else()
+    target_compile_options(
+        ${PROJECT_NAME} PRIVATE
+        -O2
+        -g
+        -gdwarf-2
+        -DNDEBUG
+    )
+endif()
+
+### EXAMPLE JS PROJECT ###
+project (libglua-js-examples)
+
+include_directories("${PROJECT_SOURCE_DIR}/inc")
+add_executable(libglua-js-examples
+    src/examples/js_examples.cpp
+)
+target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${LUA_INCLUDE_PATH})
+
+target_link_libraries(${PROJECT_NAME} PRIVATE glua c++ ${LIBLUA} v8 v8_libbase v8_libplatform)
+
+target_compile_options(
+    ${PROJECT_NAME} PRIVATE
+    -std=c++17
+    -stdlib=libc++
     -Wall
     -Wextra
     -Werror

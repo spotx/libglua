@@ -280,7 +280,7 @@ auto GluaBase::push(const std::vector<Type>& value) -> void
 template<typename Type>
 auto GluaBase::push(const std::unordered_map<std::string, Type>& value) -> void
 {
-    pushMap(value.size());
+    pushStartMap(value.size());
 
     for (const auto& item_pair : value)
     {
@@ -386,6 +386,8 @@ auto GluaBase::getStringMap(int stack_index) -> std::unordered_map<std::string, 
         // pop map value off stack
         popOffStack(1);
     }
+
+    return result;
 }
 template<typename Type>
 auto GluaBase::getOptional(int stack_index) -> std::optional<Type>
