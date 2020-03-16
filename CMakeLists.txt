@@ -30,15 +30,15 @@ target_include_directories(glua SYSTEM PRIVATE ${LUA_INCLUDE_PATH})
 target_include_directories(glua PRIVATE ${PROJECT_SOURCE_DIR}/inc)
 target_compile_features(glua PRIVATE cxx_std_17)
 
-if(UNIX)
-    target_compile_options(glua PRIVATE -Wall -Wextra -Werror)
-else()
-    target_compile_options(glua PRIVATE /W4 /WX)
-endif()
+# if(UNIX)
+#     target_compile_options(glua PRIVATE -Wall -Wextra -Werror)
+# else()
+#     target_compile_options(glua PRIVATE /W4 /WX)
+# endif()
 
-if(CLANG_TIDY_BIN)
-    set_target_properties(glua PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND}")
-endif()
+# if(CLANG_TIDY_BIN)
+#     set_target_properties(glua PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND}")
+# endif()
 
 ### EXAMPLE PROJECT ###
 project (libglua-examples)
